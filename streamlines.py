@@ -40,13 +40,15 @@ class Vortex:
         U = -self.strength*(Y - self.y_pos)/(2*np.pi*((Y - self.y_pos)**2 + (X - self.x_pos)**2))
         self.y_velocity = np.where(V !=np.inf, V, 0)
         self.x_velocity = np.where(U !=np.inf, U, 0)
+
+
 def refresh():
-    try:
-        canvas.clf()
-    except NameError:
-        canvas =None
-    
-    #fig = Figure(figsize = (5,5),dpi = 100)
+#    try:
+#        canvas.clf()
+#    except NameError:
+#        canvas =None
+
+    fig = Figure(figsize = (5,5),dpi = 100)
     #plot1 = fig.add_subplot(111)
     w = 9
     Y, X = np.mgrid[-w:w:100j, -w:w:100j]
@@ -55,8 +57,12 @@ def refresh():
     for i in flows:
         U = U +i.x_velocity
         V = V +i.y_velocity
-    plot1.streamplot(X,Y,U,V, density = 0.5)
-    print(U.shape)
+    speed = np.sqrt(U**2 +V**2)
+    normalized = np.clip(speed, 0.5,15)
+    plot1.streamplot(X,Y,U,V, density = 1, color=U, linewidth=normalized)
+    
+
+    
 """     canvas = FigureCanvasTkAgg(fig,master = window)
     fig.canvas.draw()
     
@@ -78,8 +84,8 @@ def add_uniform():
     y_uniform = Entry(popup, bd =5)
     y_uniform.grid(row = 1,column = 1)        
     def close_window ():
-        plt.clf()
-        plt.cla()
+        #plt.clf()
+        #plt.cla()
         plot1.clear()
         global flows
         a = Uniform(int(x_uniform.get()),int(y_uniform.get()))
@@ -106,9 +112,9 @@ def add_source():
     strength = Entry(popup,bd =5)
     strength.grid(row = 2, column = 1)
     def close_window ():
-        plt.clf()
+        #plt.clf()
         plot1.clear()
-        plt.cla()
+        #plt.cla()
         global flows
         a = Source(int(x_pos.get()),int(y_pos.get()),int(strength.get()))
         flows.append(a)
@@ -133,8 +139,8 @@ def add_vortex():
     strength = Entry(popup,bd =5)
     strength.grid(row = 2, column = 1)
     def close_window():
-        plt.clf()
-        plt.cla()
+        #plt.clf()
+        #plt.cla()
         plot1.clear()
         global flows
         a = Vortex(int(x_pos.get()),int(y_pos.get()),int(strength.get()))
@@ -159,8 +165,8 @@ def add_doublet():
     strength = Entry(popup,bd=5)
     strength.grid(row =2,column =1)
     def close_window():
-        plt.clf()
-        plt.cla()
+        #plt.clf()
+        #plt.cla()
         plot1.clear()
         global flows
         a = Source(int(x_pos.get()),int(y_pos.get()),int(strength.get()))
@@ -174,18 +180,14 @@ def add_doublet():
 window =Tk()
 window.title("Potential flows")
 
-window.geometry("500x500")
+window.geometry("800x800")
 
 uniform_button = Button(master = window,
                        command = add_uniform,
                        height = 2,
                        width = 10,
                        text = "Uniform")
-refresh_button = Button(master = window,
-                        command = refresh,
-                        height = 2,
-                        width = 10,
-                        text = "refresh")
+
 source_button = Button(master = window,
                        command = add_source,
                        height = 2,
