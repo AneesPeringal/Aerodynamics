@@ -4,10 +4,12 @@ from tkinter import *
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
-global flows
-flows = []
+#from numpy.lib.utils import source
 import numpy as np
 import matplotlib.pyplot as plt
+global flows
+flows = []
+
 class Uniform:
     flow_type = "uniform"
     def __init__(self, x_direction, y_direction):
@@ -45,7 +47,7 @@ def refresh():
         canvas =None
     
     #fig = Figure(figsize = (5,5),dpi = 100)
-    plot1 = fig.add_subplot(111)
+    #plot1 = fig.add_subplot(111)
     w = 9
     Y, X = np.mgrid[-w:w:100j, -w:w:100j]
     U = 0
@@ -54,6 +56,7 @@ def refresh():
         U = U +i.x_velocity
         V = V +i.y_velocity
     plot1.streamplot(X,Y,U,V, density = 0.5)
+    print(U.shape)
 """     canvas = FigureCanvasTkAgg(fig,master = window)
     fig.canvas.draw()
     
@@ -140,6 +143,34 @@ def add_vortex():
         popup.destroy()
     button = Button(popup, text = "Okay", command = close_window)
     button.grid(row = 3, column = 1)
+def add_doublet():
+    popup = Tk()
+    popup.title("Doublet flow definition")
+    L1 = Label(popup, text = "x positon of the doublet")
+    L1.grid(row=0,column=0)
+    x_pos = Entry(popup, bd =5)
+    x_pos.grid(row =0, column =1)
+    L2 = Label(popup, text = "y position of the doublet")
+    L2.grid(row =1, column =0)
+    y_pos =Entry(popup, bd = 5)
+    y_pos.grid(row =1,column=1)
+    L3 = Label(popup, text="Strength of the doublet")
+    L3.grid (row= 2, column = 0)
+    strength = Entry(popup,bd=5)
+    strength.grid(row =2,column =1)
+    def close_window():
+        plt.clf()
+        plt.cla()
+        plot1.clear()
+        global flows
+        a = Source(int(x_pos.get()),int(y_pos.get()),int(strength.get()))
+        b = Source(int(x_pos.get())+0.01,int(y_pos.get()), -int(strength.get()))
+        flows.append(a)
+        flows.append(b)
+        refresh()
+        popup.destroy()
+    button = Button(popup, text = "Okay", command = close_window)
+    button.grid(row = 3, column = 1)
 window =Tk()
 window.title("Potential flows")
 
@@ -165,12 +196,18 @@ vortex_button = Button(master = window,
                        height = 2,
                        width = 10,
                        text = "Vortex")
-
+doublet_button = Button(master = window,
+                       command = add_doublet,
+                       height = 2,
+                       width = 10,
+                       text = "Doublet")
 
 uniform_button.pack(side = TOP)
 source_button.pack(side = TOP)
 vortex_button.pack(side = TOP)
+doublet_button.pack(side =TOP)
 refresh_button.pack(side = TOP)
+
 fig = Figure(figsize = (5,5),dpi = 100)
 plot1 = fig.add_subplot(111)
 canvas = FigureCanvasTkAgg(fig,master = window)
