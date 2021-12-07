@@ -44,7 +44,7 @@ def refresh():
     except NameError:
         canvas =None
     
-    fig = Figure(figsize = (5,5),dpi = 100)
+    #fig = Figure(figsize = (5,5),dpi = 100)
     plot1 = fig.add_subplot(111)
     w = 9
     Y, X = np.mgrid[-w:w:100j, -w:w:100j]
@@ -54,14 +54,14 @@ def refresh():
         U = U +i.x_velocity
         V = V +i.y_velocity
     plot1.streamplot(X,Y,U,V, density = 0.5)
-    canvas = FigureCanvasTkAgg(fig,master = window)
+"""     canvas = FigureCanvasTkAgg(fig,master = window)
     fig.canvas.draw()
     
     canvas.get_tk_widget().pack(side = BOTTOM)
     toolbar = NavigationToolbar2Tk(canvas, window)
     toolbar.update()
     
-    canvas.get_tk_widget().pack(side = BOTTOM)
+    canvas.get_tk_widget().pack(side = BOTTOM) """
     
 def add_uniform():
     popup = Tk()
@@ -109,7 +109,6 @@ def add_source():
         global flows
         a = Source(int(x_pos.get()),int(y_pos.get()),int(strength.get()))
         flows.append(a)
-        print("12")
         refresh()
         popup.destroy()
     button = Button(popup, text = "Okay", command = close_window)
@@ -166,11 +165,19 @@ vortex_button = Button(master = window,
                        height = 2,
                        width = 10,
                        text = "Vortex")
+
+
 uniform_button.pack(side = TOP)
 source_button.pack(side = TOP)
 vortex_button.pack(side = TOP)
 refresh_button.pack(side = TOP)
 fig = Figure(figsize = (5,5),dpi = 100)
 plot1 = fig.add_subplot(111)
+canvas = FigureCanvasTkAgg(fig,master = window)
+fig.canvas.draw()
+    
+canvas.get_tk_widget().pack(side = BOTTOM)
+toolbar = NavigationToolbar2Tk(canvas, window)
+toolbar.update()
 
 window.mainloop()
