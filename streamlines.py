@@ -208,7 +208,7 @@ uniform_button.pack(side = TOP)
 source_button.pack(side = TOP)
 vortex_button.pack(side = TOP)
 doublet_button.pack(side =TOP)
-refresh_button.pack(side = TOP)
+
 
 fig = Figure(figsize = (5,5),dpi = 100)
 plot1 = fig.add_subplot(111)
